@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope, $uibModal, $sce, spUtil) {
+	var c = this;
+	$scope.message = $scope.data.message;
+	
+	spUtil.recordWatch($scope, "x_44552_bi_message", null, function(){
+		c.server.update().then(function(response){
+			$scope.message = response.message;
+		});
+	});
+	
+	$scope.openInformation = function () {
+		$scope.modalInstance = $uibModal.open({
+			templateUrl: 'modalTemplate',
+			scope: $scope
+		});
+	};
+	
+	$scope.closeModal = function() {
+		$scope.modalInstance.close();
+	}
+	
+	$scope.hideInformation = function(){
+		$scope.message = null;
+	}
+	
+	$scope.getHtml = function(content){
+		return $sce.trustAsHtml(content);
+	}
+	
+	$scope.hideMessage = function(){
+		$scope.message.visible = false;
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.broadcast{
+  padding:15px;
+  color: $body-bg;
+}
+
+.info{
+  background-color: $brand-info;
+}
+
+.warning{
+  background-color: $brand-warning;
+}
+
+.danger{
+  background-color: $brand-danger;
+}
+
+.broadcast &gt; p{
+  margin: 0px;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>header_message</id>
+        <internal>false</internal>
+        <link/>
+        <name>Header Message</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  data.message = getMessage();
+
+	function getMessage(){
+		var glideRecord = new GlideRecord("x_44552_bi_message");
+		glideRecord.addQuery("expired_date", ">=", new GlideDateTime());
+		glideRecord.orderBy("sys_created_on");
+		glideRecord.query();
+
+		if(glideRecord.next()){
+				return {
+					"type": glideRecord.type.toString(),
+					"title": glideRecord.short_description.toString(),
+					"content": glideRecord.content.toString(),
+					"visible": true
+				}
+		}
+
+		return null;
+	}
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-03-01 11:48:09</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>60d47a280fd93200d92e85ace1050efb</sys_id>
+        <sys_mod_count>52</sys_mod_count>
+        <sys_name>Header Message</sys_name>
+        <sys_package display_value="Broadcast Information" source="x_44552_bi">44ad866c0f593200d92e85ace1050e37</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="Broadcast Information">44ad866c0f593200d92e85ace1050e37</sys_scope>
+        <sys_update_name>sp_widget_60d47a280fd93200d92e85ace1050efb</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-03-01 13:50:40</sys_updated_on>
+        <template><![CDATA[<div ng-if="message.visible" class="broadcast {{message.type}}">
+  <span class="broadcast-content">{{ message.title }}</span>
+  <span class="pull-right" ng-click="hideMessage()">
+    <span class="glyphicon glyphicon-remove"></span>
+  </span>
+</div>]]></template>
+    </sp_widget>
+</record_update>
